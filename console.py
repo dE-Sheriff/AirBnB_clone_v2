@@ -139,7 +139,7 @@ class HBNBCommand(cmd.Cmd):
                 try:
                     value = eval(value)
                 except (SyntaxError, NameError):
-                    continue
+                    print("** value missing **")
             kwargs[key] = value
 
             if kwargs =={}:
