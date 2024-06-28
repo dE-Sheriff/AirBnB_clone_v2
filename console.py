@@ -140,11 +140,18 @@ class HBNBCommand(cmd.Cmd):
                     pass
                 if hasattr(new_instance, key):
                     setattr(new_instance, key, value)
-    
-        storage.new(new_instance)
-        print(new_instance.id)
-        new_instance.save()                               
-                                                 
+
+            if kwargs =={}:
+                new_instance = eval(class_name)()
+            else:
+                new_instance = eval(class_name)(**kwargs)
+            storage.new(new_instance)
+            print(new_instance.id)
+            new_instance.save()                               
+            
+            
+            
+
     def help_create(self):
         """ Help information for the create method """
         print("Creates a class of any type")
