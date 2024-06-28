@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 """ Console Module """
 import cmd
-import sys
+import re
+import shlex
+import ast
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -113,33 +115,32 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-    def do_create(self, args):
-        """ Create an object of any class"""
+    def do_create(self, arg):
+        """ Create a new instance of BaseModel and save it to the JSON file,
+        usage: create <class_name>
+        """
         try:
-            class_name = args.split(" ")[0]
-        except IndexError:
-            pass
-        if not class_name:
-            print("** class name missing **")
-            return
-        elif args not in HBNBCommand.classes:
-            print("** class doesn't exist **")
-            return
-        all_list = args.split(" ")
-
-        new_instance = eval(class_name)()
-        for i in range(1, len(all_list)):
-            key, value = tuple(all_list[i].split('"'))
+            class_name = arg.split(" ")[0]
+            if len(class_name) == 0:
+                print("** class name missing **")
+                return
+            if class_name and class_name not in self.valid_classes:
+                print("** class doesn't exist **")
+                return
+            
+            kwargs = {}
+            commands = arg.split(" ")
+            for i in range(1, len(commands)):
+                key = commands[i].split('"')[0]
+                value = commands[i].split('"')[1]
             if value.startswith('"'):
                 value = value.strip('"').replace("_", "")
             else:
                 try:
                     value = eval(value)
-                except Exception:
-                    print(f"**couldn't evaluate{value}")
-                    pass
-                if hasattr(new_instance, key):
-                    setattr(new_instance, key, value)
+                except (SyntaxError, NameError):
+                    print("** value missing **")
+            kwargs[key] = value
 
             if kwargs =={}:
                 new_instance = eval(class_name)()
@@ -148,10 +149,9 @@ class HBNBCommand(cmd.Cmd):
             storage.new(new_instance)
             print(new_instance.id)
             new_instance.save()                               
+        except ValueError:
+            print(ValueError)    
             
-            
-            
-
     def help_create(self):
         """ Help information for the create method """
         print("Creates a class of any type")
