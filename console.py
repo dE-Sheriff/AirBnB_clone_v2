@@ -139,7 +139,7 @@ class HBNBCommand(cmd.Cmd):
                 try:
                     value = eval(value)
                 except (SyntaxError, NameError):
-                    print("** value missing **")
+                    continue
             kwargs[key] = value
 
             if kwargs =={}:
@@ -150,7 +150,8 @@ class HBNBCommand(cmd.Cmd):
             print(new_instance.id)
             new_instance.save()                               
         except ValueError:
-            print(ValueError)    
+            print(ValueError)
+            return    
             
     def help_create(self):
         """ Help information for the create method """
