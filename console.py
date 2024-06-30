@@ -134,14 +134,14 @@ class HBNBCommand(cmd.Cmd):
             for i in range(1, len(commands)):
                 key = commands[i].split('"')[0]
                 value = commands[i].split('"')[1]
-            if value.startswith('"'):
-                value = value.strip('"').replace("_", "")
-            else:
-                try:
-                    value = eval(value)
-                except (SyntaxError, NameError):
-                    print("** value missing **")
-            kwargs[key] = value
+                if value.startswith('"'):
+                    value = value.strip('"').replace("_", " ")
+                else:
+                    try:
+                        value = eval(value)
+                    except (SyntaxError, NameError):
+                        print("** value missing **")
+                kwargs[key] = value
 
             if kwargs =={}:
                 new_instance = eval(class_name)()
